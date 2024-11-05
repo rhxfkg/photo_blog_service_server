@@ -1,0 +1,21 @@
+/* 기본 라이트 모드 */
+body {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+header, footer {
+    background-color: #f8f8f8;
+    color: #000000;
+}
+
+/* 다크 모드 */
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+header.dark-mode, footer.dark-mode {
+    background-color: #333333;
+    color: #ffffff;
+}

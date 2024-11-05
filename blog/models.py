@@ -9,6 +9,7 @@ class Post(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
     image = models.ImageField(upload_to='blog_image/%Y/%m/%d/', default='blog_image/default_error.png')
+    is_favorited = models.BooleanField(default=False)  # 즐겨찾기 필드 추가
 
     def publish(self):
         self.published_date = timezone.now()
