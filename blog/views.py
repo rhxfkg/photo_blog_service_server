@@ -16,6 +16,10 @@ class BlogImages(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+    def perform_create(self, serializer):
+        user = self.request.user if self.request.user.is_authenticated else User.objects.get_or_create(username='default_user')[0]
+        serializer.save(author=user)
+
 def post_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
     return render(request, 'blog/post_list.html', {'posts': posts})
@@ -36,7 +40,7 @@ def post_detail(request, pk):
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user
+            post.author = request.user if request.user.is_authenticated else User.objects.get_or_create(username='default_user')[0]
             post.published_date = timezone.now()
             post.save()
             return redirect('post_detail', pk=post.pk)
@@ -49,7 +53,7 @@ def post_new(request):
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user
+            post.author = request.user if request.user.is_authenticated else User.objects.get_or_create(username='default_user')[0]
             post.published_date = timezone.now()
             post.save()
             return redirect('post_detail', pk=post.pk)
