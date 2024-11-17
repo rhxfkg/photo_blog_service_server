@@ -13,6 +13,10 @@
         <nav>
             <a href="{% url 'post_list' %}">Home</a>
         </nav>
+        <form action="{% url 'post_search' %}" method="get" class="search-form">
+            <input type="text" name="q" placeholder="Search by title..." value="{{ query|default:'' }}">
+            <button type="submit">Search</button>
+        </form>
         <button id="dark-mode-toggle">Toggle Dark Mode</button>
     </header>
     

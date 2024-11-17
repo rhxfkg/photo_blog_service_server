@@ -10,6 +10,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST
+from django.db.models import Q  # Q 객체는 OR 조건을 지원합니다.
 
 
 class BlogImages(viewsets.ModelViewSet):
@@ -80,6 +81,14 @@ def post_edit(request, pk):
     
     # post 객체를 템플릿에 전달
     return render(request, 'blog/post_edit.html', {'form': form, 'post': post})
+
+def post_search(request):
+    query = request.GET.get('q', '')  # 'q'는 검색창에 입력된 검색어를 받습니다.
+    if query:
+        posts = Post.objects.filter(Q(title__icontains=query), published_date__lte=timezone.now()).order_by('published_date')
+    else:
+        posts = Post.objects.none()  # 검색어가 없으면 빈 결과 반환
+    return render(request, 'blog/post_search.html', {'posts': posts, 'query': query})
 
 @require_POST  # POST 요청만 허용
 def post_delete(request, pk):
