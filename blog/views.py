@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST
 from django.db.models import Q  # Q 객체는 OR 조건을 지원합니다.
+from django.views.decorators.csrf import csrf_exempt
 
 
 class BlogImages(viewsets.ModelViewSet):
@@ -20,6 +21,38 @@ class BlogImages(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         user = self.request.user if self.request.user.is_authenticated else User.objects.get_or_create(username='default_user')[0]
         serializer.save(author=user)
+
+@api_view(['GET'])
+def get_image_list(request):
+    """
+    이미지 목록을 반환하는 API
+    """
+    posts = Post.objects.filter(published_date__lte=timezone.now())
+    image_list = [
+        {
+            "id": post.id,
+            "file": post.image.url if post.image else None,
+        }
+        for post in posts
+    ]
+    return JsonResponse(image_list, safe=False)
+
+
+@api_view(['POST'])
+@csrf_exempt
+def add_tags_to_image(request, pk):
+    """
+    태그 추가 API: 검출된 객체를 받아 해당 이미지의 태그를 업데이트
+    """
+    post = get_object_or_404(Post, pk=pk)
+    tags = request.data.get("tags", [])
+    if tags:
+        if not post.tags:
+            post.tags = []
+        post.tags += tags  # 태그 추가
+        post.save()
+        return Response({"status": "success", "tags": post.tags})
+    return Response({"status": "failed", "message": "No tags provided."}, status=400)
 
 def post_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')

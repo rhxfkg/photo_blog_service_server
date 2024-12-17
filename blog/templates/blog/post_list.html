@@ -17,6 +17,18 @@
             <!-- 이미지 다운로드 버튼 -->
             <a href="{{ post.image.url }}" download="{{ post.title }}.jpg" class="download-button">이미지 다운로드</a>
 
+            <!-- 태그 표시 -->
+            <div class="tags">
+                <strong>Tags:</strong>
+                {% if post.tags %}
+                    {% for tag in post.tags %}
+                        <span class="tag">{{ tag }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span>No tags available</span>
+                {% endif %}
+            </div>
+
             <!-- 즐겨찾기 토글 버튼 -->
             <button onclick="toggleFavorite({{ post.id }})" class="favorite-button">
                 {% if post.is_favorited %}

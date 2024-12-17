@@ -6,6 +6,8 @@ router = routers.DefaultRouter()
 router.register('Post', views.BlogImages)
 
 urlpatterns = [
+    path('api/images/', views.get_image_list, name='get_image_list'),
+    path('api/images/<int:pk>/add_tags/', views.add_tags_to_image, name='add_tags_to_image'),
     path('', views.post_list, name='post_list'),
     path('search/', views.post_search, name='post_search'),
     path('favorites/', views.favorite_list, name='favorite_list'),  # 즐겨찾기 목록 페이지
@@ -17,4 +19,4 @@ urlpatterns = [
     path('post/<int:pk>/edit/', views.post_edit, name='post_edit'),
     path('js_test/', views.js_test, name='js_test'),
     path('api_root/', include(router.urls)),
-] 
+]
