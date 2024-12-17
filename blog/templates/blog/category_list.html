@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="{% if request.COOKIES.dark_mode == 'true' %}dark-mode{% endif %}">
+    <header class="{% if request.COOKIES.dark_mode == 'true' %}dark-mode{% endif %}">
+        <h1>Categories</h1>
+        <nav>
+            <a href="{% url 'post_list' %}">Back to Home</a>
+        </nav>
+    </header>
+
+    <div class="content">
+        <div class="category-list">
+            {% for category in categories %}
+                <button onclick="filterByCategory('{{ category }}')">{{ category }}</button>
+            {% endfor %}
+        </div>
+    </div>
+
+    <footer class="{% if request.COOKIES.dark_mode == 'true' %}dark-mode{% endif %}">
+        <p>&copy; 2024 My Blog</p>
+    </footer>
+
+    <script>
+        function filterByCategory(category) {
+            window.location.href = `/filter/?category=${category}`;
+        }
+    </script>
+</body>
+</html>

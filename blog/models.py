@@ -17,5 +17,11 @@ class Post(models.Model):
         self.published_date = timezone.now()
         self.save()
 
+    def save(self, *args, **kwargs):
+        # 중복된 태그 제거
+        if isinstance(self.tags, list):  # tags가 리스트인지 확인
+            self.tags = list(set(self.tags))
+        super().save(*args, **kwargs)  # 부모 클래스의 save 호출
+
     def __str__(self):
         return self.title

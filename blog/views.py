@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST
 from django.db.models import Q  # Q 객체는 OR 조건을 지원합니다.
 from django.views.decorators.csrf import csrf_exempt
-
+from .models import Post  # 모델 임포트 추가
 
 class BlogImages(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -53,6 +53,31 @@ def add_tags_to_image(request, pk):
         post.save()
         return Response({"status": "success", "tags": post.tags})
     return Response({"status": "failed", "message": "No tags provided."}, status=400)
+
+# 80개 카테고리 리스트 정의
+CATEGORIES = sorted([
+    "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", 
+    "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", 
+    "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", 
+    "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", 
+    "kite", "baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket", 
+    "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple", 
+    "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", 
+    "chair", "couch", "potted plant", "bed", "dining table", "toilet", "tv", "laptop", 
+    "mouse", "remote", "keyboard", "cell phone", "microwave", "oven", "toaster", "sink", 
+    "refrigerator", "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush", "no tag"
+])
+
+def category_list(request):
+    return render(request, 'blog/category_list.html', {'categories': CATEGORIES})
+
+def filtered_images(request):
+    category = request.GET.get('category')  # URL의 GET 파라미터에서 'category' 값을 가져옵니다.
+    if category:  # 카테고리 값이 존재할 때만 필터링
+        images = Post.objects.filter(tags__icontains=category)
+    else:  # 카테고리 값이 없으면 전체 이미지 반환
+        images = Post.objects.all()
+    return render(request, 'blog/filtered_images.html', {'category': category, 'images': images})
 
 def post_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')

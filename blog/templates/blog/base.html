@@ -16,6 +16,7 @@
         <form action="{% url 'post_search' %}" method="get" class="search-form">
             <input type="text" name="q" placeholder="Search by title..." value="{{ query|default:'' }}">
             <button type="submit">Search</button>
+            <a href="{% url 'category_list' %}">Select Category</a> <!-- 카테고리 버튼 추가 -->
         </form>
         <button id="dark-mode-toggle">Toggle Dark Mode</button>
     </header>
