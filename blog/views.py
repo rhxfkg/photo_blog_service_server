@@ -42,6 +42,24 @@ def user_logout(request):
     logout(request)
     return redirect('login')
 
+@api_view(['POST'])
+def api_user_login(request):
+    """
+    클라이언트가 로그인 요청을 보내면 ID와 PW를 검증하는 API
+    """
+    username = request.data.get('username')  # 요청으로부터 ID
+    password = request.data.get('password')  # 요청으로부터 PW
+
+    if not username or not password:
+        return Response({"status": "failed", "message": "Username and password are required."}, status=400)
+    
+    user = authenticate(request, username=username, password=password)
+    
+    if user is not None:
+        return Response({"status": "success", "message": "Login successful.", "username": username})
+    else:
+        return Response({"status": "failed", "message": "Invalid username or password."}, status=401)
+
 @api_view(['GET'])
 def get_image_list(request):
     """

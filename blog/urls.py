@@ -8,6 +8,7 @@ router.register('Post', views.BlogImages)
 urlpatterns = [
     path('', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
+    path('api/login/', views.api_user_login, name='api_user_login'),  # 로그인 API
     path('api/images/', views.get_image_list, name='get_image_list'),
     path('api/images/<int:pk>/add_tags/', views.add_tags_to_image, name='add_tags_to_image'),
     path('post_list/', views.post_list, name='post_list'),
