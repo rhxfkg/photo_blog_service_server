@@ -12,6 +12,15 @@
         <h1>My Blog</h1>
         <nav>
             <a href="{% url 'post_list' %}">Home</a>
+            
+            <!-- 사용자 로그인/로그아웃 영역 -->
+            {% if user.is_authenticated %}
+                <p>Welcome, {{ user.username }}!</p>
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+            
         </nav>
         <form action="{% url 'post_search' %}" method="get" class="search-form">
             <input type="text" name="q" placeholder="Search by title..." value="{{ query|default:'' }}">

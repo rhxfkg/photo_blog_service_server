@@ -6,9 +6,11 @@ router = routers.DefaultRouter()
 router.register('Post', views.BlogImages)
 
 urlpatterns = [
+    path('', views.user_login, name='login'),
+    path('logout/', views.user_logout, name='logout'),
     path('api/images/', views.get_image_list, name='get_image_list'),
     path('api/images/<int:pk>/add_tags/', views.add_tags_to_image, name='add_tags_to_image'),
-    path('', views.post_list, name='post_list'),
+    path('post_list/', views.post_list, name='post_list'),
     path('categories/', views.category_list, name='category_list'),
     path('filter/', views.filtered_images, name='filtered_images'),  # 필터링된 이미지 뷰 추가
     path('search/', views.post_search, name='post_search'),

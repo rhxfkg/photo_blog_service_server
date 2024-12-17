@@ -13,6 +13,9 @@ from django.views.decorators.http import require_POST
 from django.db.models import Q  # Q 객체는 OR 조건을 지원합니다.
 from django.views.decorators.csrf import csrf_exempt
 from .models import Post  # 모델 임포트 추가
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
 class BlogImages(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -21,6 +24,23 @@ class BlogImages(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         user = self.request.user if self.request.user.is_authenticated else User.objects.get_or_create(username='default_user')[0]
         serializer.save(author=user)
+
+def user_login(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('post_list')  # 로그인 성공 시 post_list 페이지로 이동
+        else:
+            return render(request, 'blog/login.html', {'error_message': 'Invalid username or password.'})
+    return render(request, 'blog/login.html')
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')
 
 @api_view(['GET'])
 def get_image_list(request):
